@@ -10,6 +10,9 @@ wood_height = 20
 circle_size = 20
 score = 0
 missed = 0
+speed = 5
+delta_speed = 2
+lives = 3
 wood_start_y = canvas_height - wood_height
 canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg="green")
 canvas.pack()
@@ -35,22 +38,26 @@ def move_wood(event):
 
 
 def update_game():
-    global score, missed
+    global score, missed, speed, delta_speed, lives
     wx, wy = canvas.coords(wood)[:2]
     cx, cy = canvas.coords(circle)[:2]
 
-    canvas.move(circle, 0, 5)
+    canvas.move(circle, 0, speed)
     if cy + circle_size >= wy and wx <= cx + circle_size / 2 <= wx + wood_width:
         score = score + 1
+        speed = speed + delta_speed
+        root.title(f"Счёт: {score}, жизней потрачено: {missed} из {lives}")
         spawn_circle()
 
     elif cy + circle_size >= canvas_height:
         missed = missed + 1
+        root.title(f"Счёт: {score}, жизней потрачено: {missed} из {lives}")
         spawn_circle()
-    if missed < 3:
+    if missed < lives:
         canvas.after(50, update_game)
     else:
-        canvas.create_text(canvas_width / 2, canvas_height / 2, text=f"Игра закончена! Счёт: {score}", fill="black",font=("Arial", 30))
+        canvas.create_text(canvas_width / 2, canvas_height / 2, text=f"Игра закончена! Счёт: {score}", fill="black",
+                           font=("Arial", 20))
 
 
 spawn_circle()
