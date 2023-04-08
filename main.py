@@ -34,6 +34,27 @@ def move_wood(event):
     canvas.coords(wood, x, y, x + wood_width, y + wood_height)
 
 
+def update_game():
+    global score, missed
+    wx, wy = canvas.coords(wood)[:2]
+    cx, cy = canvas.coords(circle)[:2]
+
+    canvas.move(circle, 0, 5)
+    if cy + circle_size >= wy and wx <= cx + circle_size / 2 <= wx + wood_width:
+        score = score + 1
+        spawn_circle()
+
+    elif cy + circle_size >= canvas_height:
+        missed = missed + 1
+        spawn_circle()
+    if missed < 3:
+        canvas.after(50, update_game)
+    else:
+        canvas.create_text(canvas_width / 2, canvas_height / 2, text=f"Игра закончена! Счёт: {score}", fill="black",font=("Arial", 30))
+
+
+spawn_circle()
 canvas.focus_set()
 canvas.bind("<Key>", move_wood)
+update_game()
 root.mainloop()
