@@ -1,0 +1,39 @@
+import tkinter as tk
+import random
+
+root = tk.Tk()
+root.title("Лови Фигню")
+canvas_width = 400
+canvas_height = 600
+wood_width = 100
+wood_height = 20
+circle_size = 20
+score = 0
+missed = 0
+wood_start_y = canvas_height - wood_height
+canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg="green")
+canvas.pack()
+wood = canvas.create_rectangle(0, wood_start_y, wood_width, canvas_height, fill="brown")
+circle = canvas.create_oval(0, 0, circle_size, circle_size, fill="red")
+
+
+def spawn_circle():
+    global circle
+    x = random.randint(0, canvas_width - circle_size)
+    y = -circle_size
+    canvas.coords(circle, x, y, x + circle_size, y + circle_size)
+
+
+def move_wood(event):
+    x, y = canvas.coords(wood)[:2]
+    if event.keysym == 'Left':
+        x = x - 10
+    elif event.keysym == 'Right':
+        x = x + 10
+    x = max(min(x, canvas_width - wood_width), 0)
+    canvas.coords(wood, x, y, x + wood_width, y + wood_height)
+
+
+canvas.focus_set()
+canvas.bind("<Key>", move_wood)
+root.mainloop()
